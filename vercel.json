@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/submit.php", "destination": "/api/submit" }
+  ]
+}
