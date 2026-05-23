@@ -1,14 +1,17 @@
 module.exports = (req, res) => {
-    // 获取 New-API 传过来的金额和支付类型
-    const money = req.query.money || '5.00';
-    const type = req.query.type || 'wxpay';
+    // 终极全兼容抓取：同时从 GET(query) 和 POST(body) 中捞取参数，不管大小写
+    const params = { ...req.query, ...req.body };
+    
+    // 兼容市面上所有易支付变种的金额参数名 (money, Amount, total_fee)
+    const money = params.money || params.Amount || params.total_fee || '5.00';
+    
+    // 兼容支付类型参数名 (type, paytype)
+    const type = params.type || params.paytype || 'wxpay';
 
-    // 判断支付通道
     const qrcode = (type === 'alipay') ? '/ali.png' : '/wx.png';
     const payName = (type === 'alipay') ? '支付宝' : '微信支付';
     const themeColor = (type === 'alipay') ? '#00A0E9' : '#09BB07';
 
-    // 直接输出完美渲染的 HTML 页面
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.status(200).send(`
 <!DOCTYPE html>
